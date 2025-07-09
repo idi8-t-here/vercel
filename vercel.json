@@ -37,9 +37,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "REACT_APP_VERSION": "@react_app_version",
-    "REACT_APP_BUILD_TIME": "@react_app_build_time"
-  }
+  ]
 } 
