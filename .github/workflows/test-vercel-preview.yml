@@ -29,20 +29,16 @@ jobs:
         
     - name: Get Vercel Preview URL
       id: vercel-preview
-      uses: ViktorJT/Get-Vercel-preview-url@v1.0.0
+      uses: ViktorJT/Get-Vercel-preview-url@1.2.2
       with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        vercel-team-id: ${{ secrets.VERCEL_TEAM_ID }}
-      env:
-        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+        vercel_access_token: ${{ secrets.VERCEL_TOKEN }}
+        vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
+        gh_token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Display Preview URL
       run: |
-        echo "Vercel Preview URL: ${{ steps.vercel-preview.outputs.preview-url }}"
-        echo "Deployment URL: ${{ steps.vercel-preview.outputs.deployment-url }}"
+        echo "Vercel Preview URL: ${{ steps.vercel-preview.outputs.preview_url }}"
+        echo "Preview URL is ready: ${{ steps.vercel-preview.outputs.preview_url }}"
         
 
           
@@ -52,13 +48,10 @@ jobs:
         echo "## Vercel Preview URL Test Results" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Preview URL" >> $GITHUB_STEP_SUMMARY
-        echo "${{ steps.vercel-preview.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Deployment URL" >> $GITHUB_STEP_SUMMARY
-        echo "${{ steps.vercel-preview.outputs.deployment-url }}" >> $GITHUB_STEP_SUMMARY
+        echo "${{ steps.vercel-preview.outputs.preview_url }}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Action Status" >> $GITHUB_STEP_SUMMARY
-        if [ "${{ steps.vercel-preview.outputs.preview-url }}" != "" ]; then
+        if [ "${{ steps.vercel-preview.outputs.preview_url }}" != "" ]; then
           echo "✅ Successfully retrieved Vercel preview URL" >> $GITHUB_STEP_SUMMARY
         else
           echo "❌ Failed to retrieve Vercel preview URL" >> $GITHUB_STEP_SUMMARY
