@@ -1,52 +1,26 @@
-name: Vercel Preview URL Action
+name: Get Vercel Preview URL
 
 on:
   push:
     branches: [ main, master ]
 
 jobs:
-  wait_for_vercel:
-    name: Wait for Vercel Deployment
+  get-vercel-preview:
+    name: Fetch Vercel Preview URL
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    outputs:
-      preview_url: ${{ steps.waitFor200.outputs.url }}
     steps:
-      - name: Waiting for 200 from the Vercel Preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-        id: waitFor200
+      - name: Get Vercel Preview URL
+        id: vercel-preview
+        uses: ViktorJT/Get-Vercel-preview-url@1.2.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 1200
-
-  test_vercel_preview:
-    name: Test Vercel Preview URL
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    needs: wait_for_vercel
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Build React app
-        run: npm run build
-        env:
-          REACT_APP_VERSION: ${{ github.sha }}
-          REACT_APP_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
+          vercel_access_token: ${{ secrets.VERCEL_TOKEN }}
+          vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Display Preview URL
         run: |
-          echo "Vercel Preview URL: ${{ needs.wait_for_vercel.outputs.preview_url }}"
-          echo "Preview URL is ready: ${{ needs.wait_for_vercel.outputs.preview_url }}"
+          echo "Vercel Preview URL: ${{ steps.vercel-preview.outputs.preview_url }}"
+          echo "Preview URL is ready: ${{ steps.vercel-preview.outputs.preview_url }}"
           
       - name: Create Summary
         if: always()
@@ -54,10 +28,10 @@ jobs:
           echo "## Vercel Preview URL Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Preview URL" >> $GITHUB_STEP_SUMMARY
-          echo "${{ needs.wait_for_vercel.outputs.preview_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.vercel-preview.outputs.preview_url }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Action Status" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ needs.wait_for_vercel.outputs.preview_url }}" != "" ]; then
+          if [ "${{ steps.vercel-preview.outputs.preview_url }}" != "" ]; then
             echo "✅ Successfully retrieved Vercel preview URL" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Failed to retrieve Vercel preview URL" >> $GITHUB_STEP_SUMMARY
