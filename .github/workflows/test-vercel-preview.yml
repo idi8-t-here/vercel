@@ -9,6 +9,12 @@ jobs:
     name: Fetch Vercel Preview URL
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for Vercel deployment
+        run: |
+          echo "Waiting 60 seconds for Vercel deployment to complete..."
+          sleep 60
+          echo "Deployment wait completed!"
+          
       - name: Get Vercel Preview URL
         id: vercel-preview
         uses: ViktorJT/Get-Vercel-preview-url@1.2.2
