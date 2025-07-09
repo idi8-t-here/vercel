@@ -1,4 +1,4 @@
-# Vercels Preview URL Tests
+# Vercels Preview URL Testsz
 
 This repository is designed to test the [Get-Vercel-preview-url](https://github.com/marketplace/actions/get-vercel-preview-url) GitHub Action by ViktorJT.
 
